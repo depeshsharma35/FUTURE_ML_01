@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-# 1. DATA CLEANING
 print("--- Phase 1: Data Cleaning ---")
 try:
     df = pd.read_csv('superstore_sales.csv', encoding='ISO-8859-1')
@@ -20,7 +19,6 @@ df = df.sort_values('Order Date')
 df = df.dropna(subset=['Sales', 'Order Date'])
 print(f"Data cleaned. Total records: {len(df)}")
 
-# 2. FEATURE ENGINEERING
 print("\n--- Phase 2: Feature Engineering ---")
 daily_sales = df.groupby('Order Date')['Sales'].sum().reset_index()
 daily_sales['Year'] = daily_sales['Order Date'].dt.year
@@ -37,7 +35,6 @@ daily_sales['Sales_MA_30'] = daily_sales['Sales'].rolling(window=30).mean()
 daily_sales = daily_sales.dropna()
 print(f"Features engineered. Total records for training: {len(daily_sales)}")
 
-# 3. MODEL TRAINING & EVALUATION
 print("\n--- Phase 3: Model Training ---")
 features = ['Year', 'Month', 'Day', 'DayOfWeek', 'IsWeekend', 'Quarter', 
             'Sales_Lag_1', 'Sales_Lag_7', 'Sales_Lag_30', 'Sales_MA_7', 'Sales_MA_30']
@@ -57,11 +54,9 @@ print(f"MAE: {mean_absolute_error(y_test, y_pred):.2f}")
 print(f"RMSE: {np.sqrt(mean_squared_error(y_test, y_pred)):.2f}")
 print(f"R2 Score: {r2_score(y_test, y_pred):.2f}")
 
-# 4. VISUALIZATION
 print("\n--- Phase 4: Visualization ---")
 sns.set_theme(style="whitegrid")
 
-# Forecast vs Actual
 plt.figure(figsize=(12, 6))
 plt.plot(daily_sales['Order Date'].iloc[split_idx:], y_test, label='Actual Sales', color='blue', alpha=0.6)
 plt.plot(daily_sales['Order Date'].iloc[split_idx:], y_pred, label='Forecasted Sales', color='red', linestyle='--')
@@ -70,7 +65,6 @@ plt.legend()
 plt.savefig('my_forecast_comparison.png')
 print("Saved: my_forecast_comparison.png")
 
-# Importance
 importances = model.feature_importances_
 feat_imp = pd.DataFrame({'Feature': features, 'Importance': importances}).sort_values('Importance', ascending=False)
 plt.figure(figsize=(10, 6))
