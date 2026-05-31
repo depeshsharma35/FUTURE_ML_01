@@ -1,11 +1,10 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+# pyrefly: ignore [missing-import]
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 
 print("--- Phase 1: Data Cleaning ---")
 try:
@@ -64,13 +63,15 @@ plt.title('Sales Forecast vs Actual Performance', fontsize=16)
 plt.legend()
 plt.savefig('my_forecast_comparison.png')
 print("Saved: my_forecast_comparison.png")
+plt.show()
 
 importances = model.feature_importances_
 feat_imp = pd.DataFrame({'Feature': features, 'Importance': importances}).sort_values('Importance', ascending=False)
 plt.figure(figsize=(10, 6))
-sns.barplot(x='Importance', y='Feature', data=feat_imp.head(10), palette='viridis')
+sns.barplot(x='Importance', y='Feature', data=feat_imp.head(10), hue='Feature', palette='viridis', legend=False)
 plt.title('Key Drivers of Sales Demand', fontsize=16)
 plt.savefig('my_sales_drivers.png')
 print("Saved: my_sales_drivers.png")
+plt.show()
 
 print("\n--- Execution Complete ---")
